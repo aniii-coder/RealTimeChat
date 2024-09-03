@@ -1,0 +1,23 @@
+.lb-label{
+ font: 50vh;
+ display: block;
+ margin-top: 5px;
+ border: 0px solid black;
+}
+
+.lb-input{
+    
+    /* margin: 0px; */
+   width: 30vw;
+   border-radius: 5px;
+   border: 0px solid grey;
+   background-color: whitesmoke;
+   height: 4vh;
+   color: black;
+   font-style: italic;
+}
+.bdy-1{
+    border: 0px solid black;
+    margin-top: 10px;
+    width: 30vw;
+}
