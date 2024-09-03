@@ -23,7 +23,7 @@ const Form = ({ isSignPage = false }) => {
       <div className="fm-body-1_2">
         {isSignPage ? "Sign in to get Explored" : "Sign up to get started"}
       </div>
-      <form className="frm-clss" onSubmit={() => console.log("Submitted")}>
+      <form method="post" className="frm-clss" onSubmit={() => console.log("Submitted")}>
         {!isSignPage && (
           <Input
             label="Full Name "

@@ -1,15 +1,9 @@
 const mongoose = require('mongoose');
 
-const url = `mongodb+srv://<username>:<password>@cluster0.7vohf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+const url = `mongodb+srv://chat-app-admin:NewPasswordMongo%4093263@cluster0.7vohf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 
 
-mongoose.connect(url,
-     {
-
-        // useNewUrlParser:true ,
-        //  useUnifiedTopology: true
-    }
-)
+mongoose.connect(url)
 .then(()=>{
     console.log('Connected to db')
 })
@@ -19,9 +13,21 @@ mongoose.connect(url,
     
 
 
+// const mongoose = require('mongoose');
+// const url = ('mongodb+srv://chat-app-admin:NewPasswordMongo%4093263@cluster0.7vohf.mongodb.net/')
+
+// mongoose.connect(url)
+// .then(()=>{
+//     console.log('Connected to db')
+// })
+// .catch((err) => {
+//     console.log('error', err)
+// })
+
+
 
 // const { MongoClient, ServerApiVersion } = require('mongodb');
-// const uri = "mongodb+srv://chat_app.chat-app-admin:NewPasswordMongo%4093263@cluster0.7vohf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+// const uri = "mongodb+srv://chat-app-admin:NewPasswordMongo%4093263@cluster0.7vohf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 // const client = new MongoClient(uri, {
@@ -32,7 +38,7 @@ mongoose.connect(url,
 //   }
 // });
 
-// usrnam:chat-app-admin
+// // usrnam:chat-app-admin
 
 // async function run() {
 //   try {
