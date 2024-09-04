@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const url = `mongodb+srv://chat-app-admin:NewPasswordMongo%4093263@cluster0.7vohf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+const url = `mongodb+srv://<userName>:<password>@cluster0.7vohf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 
 
 mongoose.connect(url)
