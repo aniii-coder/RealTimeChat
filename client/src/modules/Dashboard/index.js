@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./index.css";
 import Input from "../../Components/input";
 
@@ -34,7 +34,32 @@ const Dashboard = () => {
       status: "available",
       img: "../Assests/user.svg",
     },
-  ];
+  ]
+
+
+
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem('user:detail'))
+    const fecthConversations = async() => {
+      // if (!loggedInUser || !loggedInUser.id) return; 
+      const res = await fetch(`http://localhost:8000/api/conversations/${loggedInUser?.id}`,{
+        method: "GET",
+        headers: {
+          'Content-type':'application/json',
+        }
+      });
+      const resData = await res.json()
+      console.log('resData', resData)
+      setConversations(resData)
+    }
+    fecthConversations()
+  },
+[]);
+
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user:detail')))
+  const [conversations, setConversations] = useState([])
+  console.log('conversation', conversations)
+  console.log('user', user)
   return (
     <div className="dsh-1">
       <div className="dsh-1_1">
@@ -42,7 +67,7 @@ const Dashboard = () => {
           <img src="../Assests/user.svg" alt="" id="img1" />
           <div className="dash-1_1">
             <span id="span1">
-              <bold>Aniket Singh</bold>
+              <bold>{user?.fullName}</bold>
             </span>
             <span id="span2">My Account</span>
           </div>
@@ -60,6 +85,7 @@ const Dashboard = () => {
                       <bold>{name}</bold>
                     </span>
                     <span id="span2">{status}</span>
+                    <br></br>
                   </div>
                 </div>
               );

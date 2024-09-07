@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
 const bcryptjs = require("bcryptjs");
+const cors = require('cors');
 
 require("./db/connection");
 
@@ -12,6 +13,7 @@ const Messages = require("./models/Messages.js");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 
 const port = process.env.PORT || 8000;
 
@@ -39,7 +41,10 @@ app.post("/api/register", async (req, res, next) => {
         return res.status(200).send("user registered successfully");
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log('error', error);
+    
+  }
 });
 
 app.post("/api/login", async (req, res, next) => {
@@ -74,10 +79,12 @@ app.post("/api/login", async (req, res, next) => {
                 }
               );
               user.save();
-              next();
+              return res.status(200).json({ user : {id: user._id ,email: user.email, fullName: user.fullName}, token: token })
+              
             }
           )
-          res.status(200).json({ user : {email: user.email, fullName: user.fullName, password: user.hashedPassword}, token: user.token })
+          // console.log(user.token);
+          
         }
       }
     }
@@ -88,7 +95,7 @@ app.post("/api/login", async (req, res, next) => {
 });
 
 
-app.post('/api/conversation', async(req, res)=>{
+app.post('/api/conversations', async(req, res)=>{
   try{
     const { senderId, recieverId } = req.body;
     const newConversation = new Conversations({ members: [ senderId, recieverId ]});
@@ -104,11 +111,11 @@ app.post('/api/conversation', async(req, res)=>{
 
 
 
-app.get('/api/conversation/:userId', async (req, res) => {
+app.get('/api/conversations/:userId', async (req, res) => {
   try {
-    const { userId } = req.params;
-    const conversation = await Conversations.find({ members: { $in: [userId] } });
-    const conversationUserData = Promise.all(conversation.map( async (conversation) => {
+    const {userId}  = req.params;
+    const conversations = await Conversations.find({ members: { $in: [userId] } });
+    const conversationUserData = Promise.all(conversations.map( async (conversation) => {
       const recieverId = conversation.members.find((member) => member != userId);
       const user = await Users.findById(recieverId);
       return { user: {email: user.email, fullName: user.fullName}, conversationId: conversation._id}
@@ -118,12 +125,26 @@ app.get('/api/conversation/:userId', async (req, res) => {
     console.log(error, 'error');
     res.status(500).send('Error retrieving conversation');
   }
+  finally {
+    // Optional: Send an empty array if no conversations are found
+    if (!Conversations.length) {
+      res.status(200).json([]);
+    }
+  }
 })
 
 
 app.post('/api/message', async(req, res) =>{
   try{
-    const  { conversationId, senderId, message } = req.body;
+    const  { conversationId, senderId, message, recieverId='' } = req.body;
+    if(!conversationId || !senderId || !message) return res.status(400).send('plz fill required fields') ;
+    if(!conversationId && recieverId) {
+      const newConversation = new Conversations({ members: [senderId]});
+      await newConversation.save();
+      const newMessage = new Messages({ senderId, message, conversationId: newConversation._id});
+      await newMessage.save();
+      res.status(200).send('message sent successfully');
+    }
     const newMessage = new Messages({  conversationId, senderId, message });
     await newMessage.save();
     res.status(200).send('Message sent successfully')
@@ -138,10 +159,17 @@ app.post('/api/message', async(req, res) =>{
 app.get("/api/message/:conversationId", async(req ,res) =>{
   try{
     const { conversationId } = req.params;
+    if (conversationId === 'new') res.status(200).json
     const messages = await Messages.find({ conversationId });
-    res.status(200).json(messages);
-    }
-    catch(error){
+    const messageUserData = Promise.all(messages.map( async (message) => {
+    // const  = message.members.find((member) => member != userId);
+      const user = await Users.findById(messages.senderId);
+      return { user: {email: user.email, fullName: user.fullName}, message: messages}
+    
+    }));
+    
+    res.status(200).json(await messageUserData);
+  }catch(error){
       console.log(error, 'error');
       }
 })

@@ -1,0 +1,15 @@
+{
+  "name": "newapp1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "frontend":"cd client.js && npm start",
+    "backend":"cd server.js && npm start",
+    "dev":"concurrrently \"npm run frontend\"\"npm run backend\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -2,16 +2,16 @@
 import './App.css';
 import  Dashboard  from './modules/Dashboard';
 import  Form  from './modules/Form';
-import {Routes, Route, Navigate } from 'react-router-dom'
+import {Routes, Route, Navigate } from 'react-router-dom';
 
-const ProtectedRoutes = ({children }) => {
+const ProtectedRoutes = ({children, auth=false}) => {
   
-   const isLoggedIn = localStorage.getItem('user:token') !== null || true;
+   const isLoggedIn = localStorage.getItem('user:token') !== null || false;
    console.log('isLoggedIn', isLoggedIn)
-   if(!isLoggedIn) {
-    return <Navigate to={'users/sign_in'} />
+   if(!isLoggedIn && auth) {
+    return <Navigate to={'/users/sign_in'} />
    }
-   else if(isLoggedIn && ['/users/sign_in','sign_up'].includes(window.location.href)){
+   else if(isLoggedIn && ['/users/sign_in','/users/sign_up'].includes(window.location.pathname)){
     return <Navigate to={'/'} />
    }
    return children
@@ -23,7 +23,7 @@ function App() {
    <>
    <Routes>
    <Route path='/' element={
-    <ProtectedRoutes>
+    <ProtectedRoutes auth={true}>
      <Dashboard/>
     </ProtectedRoutes>
    }></Route>
